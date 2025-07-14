@@ -1,0 +1,79 @@
+[gd_scene load_steps=11 format=4 uid="uid://cvgnortwd4dyo"]
+
+[ext_resource type="Script" uid="uid://c7lob5i4c04ea" path="res://scenes/host.gd" id="1_3d4ig"]
+[ext_resource type="Texture2D" uid="uid://dll8xkq6wjees" path="res://images/spritesheet-ppt-host.png" id="2_rkp6p"]
+[ext_resource type="FontFile" uid="uid://cimufnigdyk22" path="res://bradley-hand-itc.ttf" id="3_3d4ig"]
+[ext_resource type="Script" uid="uid://dd1bd34m3y7ph" path="res://scenes/tile_map_host.gd" id="3_g3daq"]
+[ext_resource type="FontFile" uid="uid://6lsj3yg1i6qk" path="res://calibri-regular.ttf" id="4_rkp6p"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_g3daq"]
+texture = ExtResource("2_rkp6p")
+texture_region_size = Vector2i(48, 48)
+0:0/0 = 0
+1:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_gbjrp"]
+tile_size = Vector2i(48, 48)
+sources/1 = SubResource("TileSetAtlasSource_g3daq")
+
+[sub_resource type="LabelSettings" id="LabelSettings_rkp6p"]
+font = ExtResource("3_3d4ig")
+font_size = 32
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_g3daq"]
+font = ExtResource("4_rkp6p")
+font_size = 24
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_gbjrp"]
+font = ExtResource("4_rkp6p")
+font_size = 24
+font_color = Color(0, 0, 0, 1)
+
+[node name="Host" type="Node2D"]
+script = ExtResource("1_3d4ig")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="TileMapHost" type="TileMapLayer" parent="."]
+position = Vector2(-385, -240)
+scale = Vector2(1.5, 1.5)
+tile_map_data = PackedByteArray("AAAAAAAAAQAAAAAAAAABAAAAAQAAAAAAAAACAAAAAQAAAAAAAAADAAAAAQAAAAAAAAAEAAAAAQAAAAAAAAAFAAAAAQAAAAAAAAAGAAAAAQAAAAAAAAAGAAEAAQAAAAAAAAAFAAEAAQAAAAAAAAAEAAEAAQAAAAAAAAACAAEAAQAAAAAAAAADAAEAAQAAAAAAAAABAAEAAQAAAAAAAAAAAAEAAQAAAAAAAAAAAAIAAQAAAAAAAAABAAIAAQAAAAAAAAACAAIAAQAAAAAAAAADAAIAAQAAAAAAAAAEAAIAAQAAAAAAAAAFAAIAAQAAAAAAAAAGAAIAAQAAAAAAAAAAAAMAAQAAAAAAAAAAAAQAAQAAAAAAAAAAAAUAAQAAAAAAAAAAAAYAAQAAAAAAAAABAAMAAQAAAAAAAAABAAQAAQAAAAAAAAABAAUAAQAAAAAAAAABAAYAAQAAAAAAAAACAAMAAQAAAAAAAAACAAQAAQAAAAAAAAACAAUAAQAAAAAAAAACAAYAAQAAAAAAAAADAAMAAQAAAAAAAAADAAQAAQAAAAAAAAADAAUAAQAAAAAAAAADAAYAAQAAAAAAAAAEAAMAAQAAAAAAAAAEAAQAAQAAAAAAAAAEAAUAAQAAAAAAAAAEAAYAAQAAAAAAAAAFAAMAAQAAAAAAAAAFAAQAAQAAAAAAAAAFAAUAAQAAAAAAAAAFAAYAAQAAAAAAAAAGAAMAAQAAAAAAAAAGAAQAAQAAAAAAAAAGAAUAAQAAAAAAAAAGAAYAAQAAAAAAAAA=")
+tile_set = SubResource("TileSet_gbjrp")
+script = ExtResource("3_g3daq")
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+position = Vector2(135, -206)
+color = Color(0, 0, 0, 1)
+polygon = PackedVector2Array(0, 0, 250, 0, 250, 470, 0, 470)
+
+[node name="Polygon2D" type="Polygon2D" parent="Polygon2D"]
+position = Vector2(2, 2)
+color = Color(0.862745, 0.901961, 0.945098, 1)
+polygon = PackedVector2Array(0, 0, 246, 0, 246, 466, 0, 466)
+
+[node name="LabelTitle" type="Label" parent="."]
+offset_left = -385.0
+offset_top = -290.0
+offset_right = -166.0
+offset_bottom = -249.0
+text = "The Pirate Game"
+label_settings = SubResource("LabelSettings_rkp6p")
+
+[node name="LabelChooseNextSquare" type="Label" parent="."]
+offset_left = 135.0
+offset_top = -240.0
+offset_right = 385.0
+offset_bottom = -206.0
+text = "Choose Next Square List:"
+label_settings = SubResource("LabelSettings_g3daq")
+horizontal_alignment = 1
+
+[node name="LabelCode" type="Label" parent="."]
+offset_left = -105.0
+offset_top = -280.0
+offset_right = -14.0
+offset_bottom = -256.0
+text = "Code: ----"
+label_settings = SubResource("LabelSettings_gbjrp")

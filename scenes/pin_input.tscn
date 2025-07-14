@@ -1,0 +1,116 @@
+[gd_scene load_steps=9 format=3 uid="uid://8q7rduqgko2s"]
+
+[ext_resource type="Script" uid="uid://cxln8f3ivo3sl" path="res://scenes/pin_input.gd" id="1_r6rrh"]
+[ext_resource type="FontFile" uid="uid://cimufnigdyk22" path="res://bradley-hand-itc.ttf" id="1_x4crc"]
+[ext_resource type="FontFile" uid="uid://6lsj3yg1i6qk" path="res://calibri-regular.ttf" id="2_ede6q"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ede6q"]
+font = ExtResource("1_x4crc")
+font_size = 54
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_r6rrh"]
+font = ExtResource("2_ede6q")
+font_size = 24
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ede6q"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.493545, 0.493546, 0.493545, 1)
+border_blend = true
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r6rrh"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_blend = true
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ojsu"]
+bg_color = Color(0.817521, 0.817521, 0.817521, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.493545, 0.493546, 0.493545, 1)
+border_blend = true
+
+[node name="PinInput" type="Node2D"]
+script = ExtResource("1_r6rrh")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -225.0
+offset_top = -400.0
+offset_right = 225.0
+offset_bottom = 100.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -185.0
+offset_top = -34.0
+offset_right = 185.0
+offset_bottom = 34.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Control/VBoxContainer"]
+layout_mode = 2
+text = "The Pirate Game"
+label_settings = SubResource("LabelSettings_ede6q")
+horizontal_alignment = 1
+
+[node name="CodeLabel" type="Label" parent="Control/VBoxContainer"]
+layout_mode = 2
+text = "Code:"
+label_settings = SubResource("LabelSettings_r6rrh")
+
+[node name="LineEdit" type="LineEdit" parent="Control/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/caret_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_ede6q")
+theme_override_font_sizes/font_size = 48
+theme_override_styles/focus = SubResource("StyleBoxFlat_ede6q")
+theme_override_styles/normal = SubResource("StyleBoxFlat_r6rrh")
+placeholder_text = "Enter Code"
+alignment = 1
+max_length = 10
+context_menu_enabled = false
+emoji_menu_enabled = false
+virtual_keyboard_type = 2
+caret_blink = true
+
+[node name="Button" type="Button" parent="Control/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_disabled_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("2_ede6q")
+theme_override_font_sizes/font_size = 36
+theme_override_styles/focus = SubResource("StyleBoxFlat_ede6q")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_8ojsu")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ede6q")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_8ojsu")
+theme_override_styles/normal = SubResource("StyleBoxFlat_r6rrh")
+text = "Join"
+
+[connection signal="pressed" from="Control/VBoxContainer/Button" to="." method="_on_button_pressed"]
