@@ -31,6 +31,7 @@ var player_name_rects = []
 @onready var item_animation_player: AnimationPlayer = $Control/VBoxContainerBottom/GridContainer/AnimationPlayer
 @onready var picker: Control = $Picker
 @onready var picker_v_box_container: VBoxContainer = $Picker/ColorRect/ScrollContainer/VBoxContainer
+@onready var picker_name: Label = $Picker/ColorRect/Name
 const PLAYER_NAME_RECT = preload("res://scenes/player_name_rect.tscn")
 
 # Called when the node enters the scene tree for the first time.
@@ -190,19 +191,29 @@ func _process(delta: float) -> void:
 			elif tile_type == Global.PRESENT:
 				player_action = Global.PRESENT
 	
-	player_action = Global.SWAP
 	#print("Checkpoint1")
-	if player_action != -1 && player_action != player_previous_action:
+	if player_action != -1:
 		#print("Checkpoint2")
-		if player_name_list != []: 
+		match player_action:
+			Global.ROB:
+				picker_name.text = "Rob someone"
+			Global.KILL:
+				picker_name.text = "Kill someone"#
+			Global.WIPE_OUT:
+				picker_name.text = "Skip someone's turn"
+			Global.SWAP:
+				picker_name.text = "Swap money with someone"
+			Global.PRESENT:
+				picker_name.text = "Give someone a present"
+		if player_name_list != [] and player_previous_action != player_action: 
 			player_previous_action = player_action
 			picker.set_process(true)
 			picker.visible = true
 			for i in range(len(player_name_list)):
 				var name_rect = PLAYER_NAME_RECT.instantiate()
-				name_rect.add_child(picker_v_box_container)
-				name_rect.player_name = player_name_list[i]
-				name_rect.ID = player_name_list[i]
+				picker_v_box_container.add_child(name_rect)
+				print(player_name_list[i])
+				name_rect.set_text_name(player_name_list[i], str(int(player_ID_list[i])))
 				player_name_rects.append(name_rect)
 	else:
 		for rect in player_name_rects:
