@@ -20,8 +20,8 @@ func http_connect():
 		await get_tree().process_frame
 	
 	if http.get_status() != HTTPClient.STATUS_CONNECTED: # Check if the connection was made successfully.
-		return 1
 		show_text("Could not connect to server.")
+		return 1
 
 func http_request(command = "Null"):
 	var err = 0
@@ -39,6 +39,7 @@ func http_request(command = "Null"):
 		# Keep polling for as long as the request is being processed.
 		http.poll()
 		await get_tree().process_frame
+		print("h\nh\nh")
 	
 	if err != 0:
 		show_text("Could not send request to server.")

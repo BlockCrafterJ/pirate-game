@@ -1,0 +1,85 @@
+[gd_scene load_steps=7 format=3 uid="uid://dx0si6ykur1sa"]
+
+[ext_resource type="Script" uid="uid://cuh3lqty0ifh8" path="res://scenes/player_name_rect.gd" id="1_sb4bd"]
+[ext_resource type="FontFile" uid="uid://6lsj3yg1i6qk" path="res://calibri-regular.ttf" id="1_u6klo"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_kvpfn"]
+font = ExtResource("1_u6klo")
+font_size = 32
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u6klo"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.493545, 0.493546, 0.493545, 1)
+border_blend = true
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sb4bd"]
+bg_color = Color(0.817521, 0.817521, 0.817521, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.493545, 0.493546, 0.493545, 1)
+border_blend = true
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j1yrd"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_blend = true
+
+[node name="PlayerNameRect" type="ColorRect"]
+custom_minimum_size = Vector2(0, 100)
+offset_right = 449.0
+offset_bottom = 100.0
+mouse_filter = 1
+color = Color(0.435294, 0.72549, 0.980392, 1)
+script = ExtResource("1_sb4bd")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 18.0
+offset_top = -16.0
+offset_right = 95.0
+offset_bottom = 16.0
+grow_vertical = 2
+text = "Name"
+label_settings = SubResource("LabelSettings_kvpfn")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -88.0
+offset_top = -20.0
+offset_right = -26.0
+offset_bottom = 20.0
+grow_horizontal = 0
+grow_vertical = 2
+size_flags_horizontal = 4
+theme_override_colors/font_disabled_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("1_u6klo")
+theme_override_font_sizes/font_size = 36
+theme_override_styles/focus = SubResource("StyleBoxFlat_u6klo")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_sb4bd")
+theme_override_styles/hover = SubResource("StyleBoxFlat_u6klo")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_sb4bd")
+theme_override_styles/normal = SubResource("StyleBoxFlat_j1yrd")
+text = "Select"

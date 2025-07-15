@@ -13,7 +13,7 @@ func http_connect():
 	err = http.connect_to_host(Global.host, Global.port) # Connect to host/port.
 	assert(err == OK) # Make sure connection is OK.
 
-	print("Connecting...")
+	#print("Connecting...")
 	# Wait until resolved and connected.
 	while http.get_status() == HTTPClient.STATUS_CONNECTING or http.get_status() == HTTPClient.STATUS_RESOLVING:# or not http.get_status() == HTTPClient.STATUS_CONNECTED:
 		http.poll()
@@ -30,12 +30,14 @@ func http_request(command = "Null"):
 		"Accept: */*",
 		"Pirate-type: Host",
 		"ID: %s" % str(game_id),
-		"Command-type-pirate: %s" % command
+		"Command-type-pirate: %s" % command,
+		#"Cross-grid: %s" % JSON.stringify(tile_map_host.tile_grid)
 	]
-	var out_body = {"cross-grid": JSON.stringify(tile_map_host.tile_grid)}
-	out_body = http.query_string_from_dict(out_body)
-	err = http.request(HTTPClient.METHOD_GET, "/host-send?" + out_body, out_headers) # Request a page from the site (this one was chunked..)
-	print("Requesting...")
+	#var out_body = {"cross-grid": JSON.stringify(tile_map_host.tile_grid)}
+	#out_body = http.query_string_from_dict(out_body)
+	#err = http.request(HTTPClient.METHOD_GET, "/host-send?" + out_body, out_headers) # Request a page from the site (this one was chunked...)
+	err = http.request(HTTPClient.METHOD_GET, "/host-send", out_headers)
+	#print("Requesting...")
 	while http.get_status() == HTTPClient.STATUS_REQUESTING:
 		# Keep polling for as long as the request is being processed.
 		http.poll()
@@ -86,13 +88,14 @@ func http_request(command = "Null"):
 		if headers.get("Command-type-pirate") == "New-ID":
 			game_id = int(text)
 			label_code.text = "Code: %s" % text
+		elif headers.get("Command-type-pirate") == "Set-cross-grid":
+			tile_map_host.tile_grid = JSON.parse_string(text)
 		
-		print(text)
+		#print(text)
 
 func _ready() -> void:
 	get_window().content_scale_size = Vector2(800,600)
 	connect_loop()
-	place_random_temp()
 
 func connect_loop():
 	while true:
@@ -103,9 +106,10 @@ func connect_loop():
 		await get_tree().create_timer(0.3).timeout
 
 func _process(_delta: float) -> void:
-	await get_tree().create_timer(5).timeout
+	pass
+	#await get_tree().create_timer(5).timeout
 
-func place_random_temp():
-	while true:
-		tile_map_host.place_tile_at_random(1)
-		await get_tree().create_timer(1).timeout
+#func place_random_temp():
+#	while true:
+#		tile_map_host.place_tile_at_random(1)
+#		await get_tree().create_timer(1).timeout
