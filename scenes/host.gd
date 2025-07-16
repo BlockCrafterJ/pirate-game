@@ -27,6 +27,7 @@ func http_request(command = "Null"):
 	# Some headers
 	var out_headers = [
 		"User-Agent: Pirulo/1.0 (Godot)",
+		"Content-Type: text/html",
 		"Accept: */*",
 		"Pirate-type: Host",
 		"ID: %s" % str(game_id),
@@ -85,10 +86,10 @@ func http_request(command = "Null"):
 		var text = rb.get_string_from_ascii()
 		#print("Text: ", text)
 		
-		if headers.get("Command-type-pirate") == "New-ID":
+		if headers.get("Command-Type-Pirate") == "New-ID":
 			game_id = int(text)
 			label_code.text = "Code: %s" % text
-		elif headers.get("Command-type-pirate") == "Set-cross-grid":
+		elif headers.get("Command-Type-Pirate") == "Set-cross-grid":
 			tile_map_host.tile_grid = JSON.parse_string(text)
 		
 		#print(text)

@@ -84,3 +84,5 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_u6klo")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_sb4bd")
 theme_override_styles/normal = SubResource("StyleBoxFlat_j1yrd")
 text = "Select"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

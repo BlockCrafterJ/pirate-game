@@ -84,7 +84,7 @@ func http_request(command = "Null"):
 		var text = rb.get_string_from_ascii()
 		#print("Text: ", text)
 		
-		if headers.get("ID-exists") == "Yes":
+		if headers.get("Id-Exists") == "Yes":
 			Global.game_ID = game_ID_test
 			switch_to_game = true
 		else:

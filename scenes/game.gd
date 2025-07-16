@@ -23,6 +23,8 @@ var player_previous_action = -1
 var player_name_list = []
 var player_ID_list = []
 var player_name_rects = []
+var player_id_to_action := -1
+var skip_next = 0
 @onready var tile_map_cross: TileMapLayer = $TileMapCross
 @onready var tile_map_layer: TileMapLayer = $TileMapLayer
 @onready var name_label: Label = $Control/VBoxContainerTop/Name
@@ -42,7 +44,7 @@ func http_connect():
 	err = http.connect_to_host(Global.host, Global.port) # Connect to host/port.
 	assert(err == OK) # Make sure connection is OK.
 
-	print("Connecting...")
+	#print("Connecting...")
 	# Wait until resolved and connected.
 	while http.get_status() == HTTPClient.STATUS_CONNECTING or http.get_status() == HTTPClient.STATUS_RESOLVING:# or not http.get_status() == HTTPClient.STATUS_CONNECTED:
 		http.poll()
@@ -65,10 +67,13 @@ func http_request(command = "Null"):
 		"Name: %s" % pirate_name,
 		"Cash: %s" % str(money),
 		"Bank: %s" % str(bank),
-		"Player-action: %s" % str(player_action)
+		"Player-action: %s" % str(player_action),
+		"Player-id-to-action: %s" % str(player_id_to_action),
+		"Shield: %s" % str(shield),
+		"Mirror: %s" % str(mirror)
 	]
 	err = http.request(HTTPClient.METHOD_GET, "/helloworld", out_headers) # Request a page from the site (this one was chunked..)
-	print("Requesting...")
+	#print("Requesting...")
 	while http.get_status() == HTTPClient.STATUS_REQUESTING:
 		# Keep polling for as long as the request is being processed.
 		http.poll()
@@ -116,24 +121,25 @@ func http_request(command = "Null"):
 		var text = rb.get_string_from_ascii()
 		#print("Text: ", text)
 		
-		if headers.get("Command-type-pirate") == "New-ID":
+		if headers.get("Command-Type-Pirate") == "New-ID":
 			id = int(text)
-		elif headers.get("Command-type-pirate") == "Set-cross-grid":
+		elif headers.get("Command-Type-Pirate") == "Set-cross-grid":
 			old_cross_tile_grid = tile_map_cross.tile_grid
 			tile_map_cross.tile_grid = JSON.parse_string(text)
 		if headers.get("Cash") != null:
-			if money_before != int(headers.get("Cash")):
-				money = int(headers.get("Cash"))
-		if headers.get("Player-name-list") != null:
-			player_name_list = JSON.parse_string(headers.get("Player-name-list"))
-			player_ID_list = JSON.parse_string(headers.get("Player-ID-list"))
-			
+			money = int(headers.get("Cash"))
+		if headers.get("Player-Name-List") != null:
+			player_name_list = JSON.parse_string(headers.get("Player-Name-List"))
+			player_ID_list = JSON.parse_string(headers.get("Player-ID-List"))
+		if headers.get("Skip-Next") != null:
+			skip_next += int(headers.get("Skip-Next"))
+		#if headers.get("Mirror") != null and headers.get("Shield") != null:
+		#	shield = bool(headers.get("Shield").lower())
 		
 		#print(text)
 
 func _ready() -> void:
 	pirate_name = Global.pirate_adjectives.pick_random() + " " + Global.pirate_nouns.pick_random()
-	name_label.text = pirate_name
 	connect_loop()
 
 func connect_loop():
@@ -145,6 +151,7 @@ func connect_loop():
 		await get_tree().create_timer(0.3).timeout
 
 func _process(delta: float) -> void:
+	name_label.text = pirate_name + " (" + str(id) + ")"
 	cash_label.text = "Cash: %s" % str(money)
 	bank_label.text = "Bank: %s" % str(bank)
 	var different_squares = []
@@ -156,55 +163,59 @@ func _process(delta: float) -> void:
 						different_squares.append([x,y])
 	old_cross_tile_grid = tile_map_cross.tile_grid
 	if len(different_squares) > 0:
-		for square in different_squares:
-			var tile_type : int = tile_map_layer.tile_grid[square[0]][square[1]]
-			player_action = -1
-			if tile_type == Global.M_200:
-				money += 200
-			elif tile_type == Global.M_1000:
-				money += 1000
-			elif tile_type == Global.M_3000:
-				money += 3000
-			elif tile_type == Global.M_5000:
-				money += 5000
-			elif tile_type == Global.BANK:
-				bank = money
-				money = 0
-			elif tile_type == Global.DOUBLE:
-				money *= 2
-			elif tile_type == Global.BOMB:
-				money = 0
-			elif tile_type == Global.MIRROR:
-				mirror = true
-			elif tile_type == Global.SHIELD:
-				shield = true
-			elif tile_type == Global.ROB:
-				player_action = Global.ROB
-			elif tile_type == Global.KILL:
-				player_action = Global.KILL
-			elif tile_type == Global.WIPE_OUT:
-				player_action = Global.WIPE_OUT
-			elif tile_type == Global.SWAP:
-				player_action = Global.SWAP
-			elif tile_type == Global.CHOOSE_NEXT_SQUARE:
-				player_action = Global.CHOOSE_NEXT_SQUARE
-			elif tile_type == Global.PRESENT:
-				player_action = Global.PRESENT
+		if skip_next == 0:
+			for square in different_squares:
+				var tile_type : int = tile_map_layer.tile_grid[square[0]][square[1]]
+				player_action = -1
+				player_id_to_action = -1
+				if tile_type == Global.M_200:
+					money += 200
+				elif tile_type == Global.M_1000:
+					money += 1000
+				elif tile_type == Global.M_3000:
+					money += 3000
+				elif tile_type == Global.M_5000:
+					money += 5000
+				elif tile_type == Global.BANK:
+					bank = money
+					money = 0
+				elif tile_type == Global.DOUBLE:
+					money *= 2
+				elif tile_type == Global.BOMB:
+					money = 0
+				elif tile_type == Global.MIRROR:
+					mirror = true
+				elif tile_type == Global.SHIELD:
+					shield = true
+				elif tile_type == Global.ROB:
+					player_action = Global.ROB
+				elif tile_type == Global.KILL:
+					player_action = Global.KILL
+				elif tile_type == Global.WIPE_OUT:
+					player_action = Global.WIPE_OUT
+				elif tile_type == Global.SWAP:
+					player_action = Global.SWAP
+				elif tile_type == Global.CHOOSE_NEXT_SQUARE:
+					player_action = Global.CHOOSE_NEXT_SQUARE
+				elif tile_type == Global.PRESENT:
+					player_action = Global.PRESENT
+		else:
+			skip_next -= 1
 	
 	#print("Checkpoint1")
-	if player_action != -1:
+	if player_action != -1 and player_id_to_action == -1 and player_action != Global.CHOOSE_NEXT_SQUARE:
 		#print("Checkpoint2")
 		match player_action:
 			Global.ROB:
 				picker_name.text = "Rob someone"
 			Global.KILL:
-				picker_name.text = "Kill someone"#
+				picker_name.text = "Kill someone"
 			Global.WIPE_OUT:
 				picker_name.text = "Skip someone's turn"
 			Global.SWAP:
 				picker_name.text = "Swap money with someone"
 			Global.PRESENT:
-				picker_name.text = "Give someone a present"
+				picker_name.text = "Give someone a present (1000)"
 		if player_name_list != [] and player_previous_action != player_action: 
 			player_previous_action = player_action
 			picker.set_process(true)
@@ -212,7 +223,7 @@ func _process(delta: float) -> void:
 			for i in range(len(player_name_list)):
 				var name_rect = PLAYER_NAME_RECT.instantiate()
 				picker_v_box_container.add_child(name_rect)
-				print(player_name_list[i])
+				#print(player_name_list[i])
 				name_rect.set_text_name(player_name_list[i], str(int(player_ID_list[i])))
 				player_name_rects.append(name_rect)
 	else:
