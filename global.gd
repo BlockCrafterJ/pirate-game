@@ -1,8 +1,9 @@
 extends Node
 
 var game_ID = 0
-var host = "pirate-game-server.veritatem.space"
-var port = 80
+#var host = "pirate-game-server.veritatem.space"
+var host = "localhost"
+var port = 8080
 enum {ROB, KILL, PRESENT, WIPE_OUT, SWAP, CHOOSE_NEXT_SQUARE, 
 SHIELD, MIRROR, BOMB, DOUBLE, BANK, M_5000, M_3000, M_1000, M_200}
 

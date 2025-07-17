@@ -5,6 +5,9 @@ var id := -1
 var pirate_name: String = ""
 var old_cross_tile_grid = []
 var money := 0
+var money_change := 0
+var money_mult := 1
+var zero_money := false
 var bank := 0
 var shield := false:
 	set(value):
@@ -72,6 +75,9 @@ func http_request(command = "Null"):
 		"Shield: %s" % str(shield),
 		"Mirror: %s" % str(mirror)
 	]
+	if player_id_to_action != -1:
+		player_id_to_action = -1
+		player_action = -1
 	err = http.request(HTTPClient.METHOD_GET, "/helloworld", out_headers) # Request a page from the site (this one was chunked..)
 	#print("Requesting...")
 	while http.get_status() == HTTPClient.STATUS_REQUESTING:
@@ -128,11 +134,20 @@ func http_request(command = "Null"):
 			tile_map_cross.tile_grid = JSON.parse_string(text)
 		if headers.get("Cash") != null:
 			money = int(headers.get("Cash"))
+			if zero_money:
+				money = 0
+				zero_money = false
+			money += money_change
+			money_change = 0
+			money *= money_mult
+			money_mult = 1
 		if headers.get("Player-Name-List") != null:
 			player_name_list = JSON.parse_string(headers.get("Player-Name-List"))
-			player_ID_list = JSON.parse_string(headers.get("Player-ID-List"))
+			player_ID_list = JSON.parse_string(headers.get("Player-Id-List"))
 		if headers.get("Skip-Next") != null:
+			print(skip_next)
 			skip_next += int(headers.get("Skip-Next"))
+			print(skip_next)
 		#if headers.get("Mirror") != null and headers.get("Shield") != null:
 		#	shield = bool(headers.get("Shield").lower())
 		
@@ -169,20 +184,20 @@ func _process(delta: float) -> void:
 				player_action = -1
 				player_id_to_action = -1
 				if tile_type == Global.M_200:
-					money += 200
+					money_change += 200
 				elif tile_type == Global.M_1000:
-					money += 1000
+					money_change += 1000
 				elif tile_type == Global.M_3000:
-					money += 3000
+					money_change += 3000
 				elif tile_type == Global.M_5000:
-					money += 5000
+					money_change += 5000
 				elif tile_type == Global.BANK:
 					bank = money
-					money = 0
+					zero_money = true
 				elif tile_type == Global.DOUBLE:
-					money *= 2
+					money_mult *= 2
 				elif tile_type == Global.BOMB:
-					money = 0
+					zero_money = true
 				elif tile_type == Global.MIRROR:
 					mirror = true
 				elif tile_type == Global.SHIELD:
