@@ -10,7 +10,7 @@ func http_connect():
 	var err = 0
 	http = HTTPClient.new()
 	
-	err = http.connect_to_host(Global.host, Global.port) # Connect to host/port.
+	err = http.connect_to_host(Global.host, Global.port, Global.tls_options) # Connect to host/port.
 	assert(err == OK) # Make sure connection is OK.
 
 	#print("Connecting...")
@@ -29,9 +29,9 @@ func http_request(command = "Null"):
 		"User-Agent: Pirulo/1.0 (Godot)",
 		"Content-Type: text/html",
 		"Accept: */*",
-		"Pirate-type: Host",
+		"Pirate-Type: Host",
 		"ID: %s" % str(game_id),
-		"Command-type-pirate: %s" % command,
+		"Command-Type-Pirate: %s" % command,
 		#"Cross-grid: %s" % JSON.stringify(tile_map_host.tile_grid)
 	]
 	#var out_body = {"cross-grid": JSON.stringify(tile_map_host.tile_grid)}

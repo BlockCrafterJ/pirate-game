@@ -44,7 +44,7 @@ func http_connect():
 	var err = 0
 	http = HTTPClient.new()
 	
-	err = http.connect_to_host(Global.host, Global.port) # Connect to host/port.
+	err = http.connect_to_host(Global.host, Global.port, Global.tls_options) # Connect to host/port.
 	assert(err == OK) # Make sure connection is OK.
 
 	#print("Connecting...")
