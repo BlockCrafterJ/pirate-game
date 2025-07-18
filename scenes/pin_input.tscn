@@ -94,6 +94,11 @@ emoji_menu_enabled = false
 virtual_keyboard_type = 2
 caret_blink = true
 
+[node name="TextureButton" type="TextureButton" parent="Control/VBoxContainer/LineEdit"]
+layout_mode = 2
+offset_right = 370.0
+offset_bottom = 56.0
+
 [node name="Button" type="Button" parent="Control/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
@@ -113,4 +118,5 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_8ojsu")
 theme_override_styles/normal = SubResource("StyleBoxFlat_r6rrh")
 text = "Join"
 
+[connection signal="pressed" from="Control/VBoxContainer/LineEdit/TextureButton" to="." method="_on_texture_button_pressed"]
 [connection signal="pressed" from="Control/VBoxContainer/Button" to="." method="_on_button_pressed"]

@@ -37,7 +37,7 @@ func http_request(command = "Null"):
 	#var out_body = {"cross-grid": JSON.stringify(tile_map_host.tile_grid)}
 	#out_body = http.query_string_from_dict(out_body)
 	#err = http.request(HTTPClient.METHOD_GET, "/host-send?" + out_body, out_headers) # Request a page from the site (this one was chunked...)
-	err = http.request(HTTPClient.METHOD_GET, "/host-send", out_headers)
+	err = http.request(HTTPClient.METHOD_GET, "/server", out_headers)
 	#print("Requesting...")
 	while http.get_status() == HTTPClient.STATUS_REQUESTING:
 		# Keep polling for as long as the request is being processed.
@@ -86,15 +86,16 @@ func http_request(command = "Null"):
 		var text = rb.get_string_from_ascii()
 		#print("Text: ", text)
 		
-		if headers.get("Command-Type-Pirate") == "New-ID":
+		if headers.get("command-type-pirate") == "New-ID":
 			game_id = int(text)
 			label_code.text = "Code: %s" % text
-		elif headers.get("Command-Type-Pirate") == "Set-cross-grid":
+		elif headers.get("command-type-pirate") == "Set-cross-grid":
 			tile_map_host.tile_grid = JSON.parse_string(text)
 		
 		#print(text)
 
 func _ready() -> void:
+	Global.become_host()
 	get_window().content_scale_size = Vector2(800,600)
 	connect_loop()
 

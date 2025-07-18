@@ -78,7 +78,7 @@ func http_request(command = "Null"):
 	if player_id_to_action != -1:
 		player_id_to_action = -1
 		player_action = -1
-	err = http.request(HTTPClient.METHOD_GET, "/helloworld", out_headers) # Request a page from the site (this one was chunked..)
+	err = http.request(HTTPClient.METHOD_GET, "/server", out_headers) # Request a page from the site (this one was chunked..)
 	#print("Requesting...")
 	while http.get_status() == HTTPClient.STATUS_REQUESTING:
 		# Keep polling for as long as the request is being processed.
@@ -127,13 +127,13 @@ func http_request(command = "Null"):
 		var text = rb.get_string_from_ascii()
 		#print("Text: ", text)
 		
-		if headers.get("Command-Type-Pirate") == "New-ID":
+		if headers.get("command-type-pirate") == "New-ID":
 			id = int(text)
-		elif headers.get("Command-Type-Pirate") == "Set-cross-grid":
+		elif headers.get("command-type-pirate") == "Set-cross-grid":
 			old_cross_tile_grid = tile_map_cross.tile_grid
 			tile_map_cross.tile_grid = JSON.parse_string(text)
-		if headers.get("Cash") != null:
-			money = int(headers.get("Cash"))
+		if headers.get("cash") != null:
+			money = int(headers.get("cash"))
 			if zero_money:
 				money = 0
 				zero_money = false
@@ -141,12 +141,12 @@ func http_request(command = "Null"):
 			money_change = 0
 			money *= money_mult
 			money_mult = 1
-		if headers.get("Player-Name-List") != null:
-			player_name_list = JSON.parse_string(headers.get("Player-Name-List"))
-			player_ID_list = JSON.parse_string(headers.get("Player-Id-List"))
-		if headers.get("Skip-Next") != null:
+		if headers.get("player-name-list") != null:
+			player_name_list = JSON.parse_string(headers.get("player-name-list"))
+			player_ID_list = JSON.parse_string(headers.get("player-id-list"))
+		if headers.get("skip-next") != null:
 			print(skip_next)
-			skip_next += int(headers.get("Skip-Next"))
+			skip_next += int(headers.get("skip-next"))
 			print(skip_next)
 		#if headers.get("Mirror") != null and headers.get("Shield") != null:
 		#	shield = bool(headers.get("Shield").lower())

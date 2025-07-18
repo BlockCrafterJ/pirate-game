@@ -33,7 +33,7 @@ func http_request(command = "Null"):
 		"ID: %s" % game_ID_test,
 		"Command-type-pirate: %s" % command
 	]
-	err = http.request(HTTPClient.METHOD_GET, "/helloworld", out_headers) # Request a page from the site (this one was chunked..)
+	err = http.request(HTTPClient.METHOD_GET, "/server", out_headers) # Request a page from the site (this one was chunked..)
 	print("Requesting...")
 	while http.get_status() == HTTPClient.STATUS_REQUESTING:
 		# Keep polling for as long as the request is being processed.
@@ -84,7 +84,7 @@ func http_request(command = "Null"):
 		var text = rb.get_string_from_ascii()
 		#print("Text: ", text)
 		
-		if headers.get("Id-Exists") == "Yes":
+		if headers.get("id-exists") == "Yes":
 			Global.game_ID = game_ID_test
 			switch_to_game = true
 		else:
@@ -135,3 +135,12 @@ func _on_button_pressed() -> void:
 		show_text("Loading...")
 		get_tree().change_scene_to_file("res://scenes/game.tscn")
 	button.disabled = false
+
+
+func _on_texture_button_pressed() -> void:
+	if OS.has_feature('web'): 
+		line_edit.text = JavaScriptBridge.eval("""
+			window.prompt('Enter Code')
+		""")
+	else:
+		line_edit.grab_focus()
