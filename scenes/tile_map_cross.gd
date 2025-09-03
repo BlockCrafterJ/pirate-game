@@ -3,6 +3,8 @@ extends TileMapLayer
 var tile_grid = []
 var tile_grid_width : int = 7
 var tile_grid_height : int = 7
+var different_squares = []
+var new_square = []
 
 func _ready() -> void:
 	pass
@@ -12,3 +14,9 @@ func _process(_delta: float) -> void:
 		for i in range(tile_grid_width):
 			for j in range(tile_grid_height):
 				set_cell(Vector2i(i,j), 1, Vector2i(tile_grid[i][j], 0))
+				for square in different_squares:
+					print([i,j], square)
+					if [i,j] == square:
+						new_square = square
+				if [i,j] == new_square:
+					set_cell(Vector2i(i,j), 1, Vector2i(2, 0))

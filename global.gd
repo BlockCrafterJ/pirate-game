@@ -89,6 +89,13 @@ var pirate_nouns = [
 	"Wave Watcher"
 ]
 
+func _ready() -> void:
+	if OS.get_cmdline_args().has("--local"):
+		print("RUNNING FROM LOCAL SERVER")
+		host = "localhost"
+		port = 8080
+		tls_options = null
+
 func become_host():
 	if host == "pirate-game.veritatem.space":
 		host = "pirate-game-host.veritatem.space"

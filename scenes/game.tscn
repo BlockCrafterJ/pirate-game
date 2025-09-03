@@ -30,6 +30,7 @@ texture_region_size = Vector2i(48, 48)
 12:0/0 = 0
 13:0/0 = 0
 14:0/0 = 0
+15:0/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_lnu2h"]
 tile_size = Vector2i(48, 48)
@@ -40,6 +41,7 @@ texture = ExtResource("4_gee14")
 texture_region_size = Vector2i(48, 48)
 0:0/0 = 0
 1:0/0 = 0
+2:0/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_kvpfn"]
 tile_size = Vector2i(48, 48)

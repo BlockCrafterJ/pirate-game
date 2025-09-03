@@ -3,8 +3,15 @@ extends Node2D
 var http = HTTPClient.new() # Create the Client.
 var game_id := -1
 @onready var label_code: Label = $LabelCode
+@onready var label_code_picker: Label = $Picker/ColorRect/LabelCode
 @onready var tile_map_host: TileMapLayer = $TileMapHost
-
+const PLAYER_NAME_RECT_LOBBY = preload("res://scenes/player_name_rect_lobby.tscn")
+@onready var h_flow_container: HFlowContainer = $Picker/ColorRect/ScrollContainer/HFlowContainer
+var player_name_list = []
+var player_id_list = []
+var player_id_list_old = []
+var started = false
+@onready var lobby: Control = $Picker
 # Called when the node enters the scene tree for the first time.
 func http_connect():
 	var err = 0
@@ -32,6 +39,7 @@ func http_request(command = "Null"):
 		"Pirate-Type: Host",
 		"ID: %s" % str(game_id),
 		"Command-Type-Pirate: %s" % command,
+		"Started: %s" % str(started),
 		#"Cross-grid: %s" % JSON.stringify(tile_map_host.tile_grid)
 	]
 	#var out_body = {"cross-grid": JSON.stringify(tile_map_host.tile_grid)}
@@ -89,8 +97,13 @@ func http_request(command = "Null"):
 		if headers.get("command-type-pirate") == "New-ID":
 			game_id = int(text)
 			label_code.text = "Code: %s" % text
+			label_code_picker.text = "Code: %s" % text
 		elif headers.get("command-type-pirate") == "Set-cross-grid":
 			tile_map_host.tile_grid = JSON.parse_string(text)
+		if headers.get("player-name-list") != null:
+			player_name_list = JSON.parse_string(headers.get("player-name-list"))
+			player_id_list_old = player_id_list
+			player_id_list = JSON.parse_string(headers.get("player-id-list"))
 		
 		#print(text)
 
@@ -108,10 +121,22 @@ func connect_loop():
 		await get_tree().create_timer(0.3).timeout
 
 func _process(_delta: float) -> void:
-	pass
+	if player_id_list != player_id_list_old:
+		for child in h_flow_container.get_children():
+			h_flow_container.remove_child(child)
+			child.free()
+		for i in range(len(player_id_list)):
+			var name_rect = PLAYER_NAME_RECT_LOBBY.instantiate()
+			h_flow_container.add_child(name_rect)
+			name_rect.set_text_name(player_name_list[i], str(int(player_id_list[i])))
 	#await get_tree().create_timer(5).timeout
 
 #func place_random_temp():
 #	while true:
 #		tile_map_host.place_tile_at_random(1)
 #		await get_tree().create_timer(1).timeout
+
+
+func _on_start_button_pressed() -> void:
+	started = true
+	lobby.hide()

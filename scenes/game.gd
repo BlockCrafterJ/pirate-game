@@ -132,6 +132,7 @@ func http_request(command = "Null"):
 		elif headers.get("command-type-pirate") == "Set-cross-grid":
 			old_cross_tile_grid = tile_map_cross.tile_grid
 			tile_map_cross.tile_grid = JSON.parse_string(text)
+			
 		if headers.get("cash") != null:
 			money = int(headers.get("cash"))
 			if zero_money:
@@ -169,17 +170,17 @@ func _process(delta: float) -> void:
 	name_label.text = pirate_name + " (" + str(id) + ")"
 	cash_label.text = "Cash: %s" % str(money)
 	bank_label.text = "Bank: %s" % str(bank)
-	var different_squares = []
+	tile_map_cross.different_squares = []
 	if len(old_cross_tile_grid) > 0:
 		if tile_map_cross.tile_grid != old_cross_tile_grid:
 			for x in range(len(tile_map_cross.tile_grid)):
 				for y in range(len(tile_map_cross.tile_grid)):
 					if tile_map_cross.tile_grid[x][y] != old_cross_tile_grid[x][y]:
-						different_squares.append([x,y])
+						tile_map_cross.different_squares.append([x,y])
 	old_cross_tile_grid = tile_map_cross.tile_grid
-	if len(different_squares) > 0:
+	if len(tile_map_cross.different_squares) > 0:
 		if skip_next == 0:
-			for square in different_squares:
+			for square in tile_map_cross.different_squares:
 				var tile_type : int = tile_map_layer.tile_grid[square[0]][square[1]]
 				player_action = -1
 				player_id_to_action = -1
@@ -218,6 +219,7 @@ func _process(delta: float) -> void:
 			skip_next -= 1
 	
 	#print("Checkpoint1")
+	player_action = Global.SWAP
 	if player_action != -1 and player_id_to_action == -1 and player_action != Global.CHOOSE_NEXT_SQUARE:
 		#print("Checkpoint2")
 		match player_action:

@@ -4,6 +4,8 @@ var tile_grid = []
 var available_squares = []
 var tile_grid_width : int = 7
 var tile_grid_height : int = 7
+var hovered_cell : Vector2i
+@onready var camera_2d: Camera2D = $"../Camera2D"
 
 func place_tile_at_random(tile):
 	var _available_selection = randi_range(0, len(available_squares)-1)
@@ -15,19 +17,20 @@ func _ready() -> void:
 	for i in tile_grid_width:
 		tile_grid.append([])
 		for j in tile_grid_height:
-			tile_grid[i].append(14)
+			tile_grid[i].append(15)
 			available_squares.append(Vector2i(i,j))
 	# Special squares + 5000
-	for i in range(12):
-		place_tile_at_random(i)
+	#for i in range(12):
+	#	place_tile_at_random(i)
 	# 3000
-	for i in range(2):
-		place_tile_at_random(12)
+	#for i in range(2):
+	#	place_tile_at_random(12)
 	# 1000
-	for i in range(10):
-		place_tile_at_random(13)
+	#for i in range(10):
+	#	place_tile_at_random(13)
 
 func _process(_delta: float) -> void:
 	for i in range(tile_grid_width):
 		for j in range(tile_grid_height):
 			set_cell(Vector2i(i,j), 3, Vector2i(tile_grid[i][j], 0))
+	hovered_cell = local_to_map(get_viewport().get_mouse_position() - global_position + (camera_2d.position - get_viewport_rect().size / 2))
