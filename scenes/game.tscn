@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=4 uid="uid://0tkip44t1esg"]
+[gd_scene load_steps=32 format=4 uid="uid://0tkip44t1esg"]
 
 [ext_resource type="Script" uid="uid://cb1xr5njpisbk" path="res://scenes/game.gd" id="1_p57ef"]
 [ext_resource type="Texture2D" uid="uid://ymwhrta1nv32" path="res://images/spritesheet-ppt.png" id="1_uwrxv"]
@@ -142,6 +142,20 @@ VScrollBar/styles/grabber_highlight = SubResource("StyleBoxEmpty_dinhu")
 VScrollBar/styles/grabber_pressed = SubResource("StyleBoxEmpty_kvuet")
 VScrollBar/styles/scroll = SubResource("StyleBoxEmpty_trtic")
 VScrollBar/styles/scroll_focus = SubResource("StyleBoxEmpty_ir15t")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kvpfn"]
+atlas = ExtResource("1_uwrxv")
+region = Rect2(0, 0, 48, 48)
+
+[sub_resource type="LabelSettings" id="LabelSettings_kvpfn"]
+font = ExtResource("9_0tnpc")
+font_size = 28
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_dinhu"]
+font = ExtResource("9_0tnpc")
+font_size = 48
+font_color = Color(0, 0, 0, 1)
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_p57ef")
@@ -302,3 +316,117 @@ vertical_scroll_mode = 3
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[node name="ChooseDown" type="Control" parent="."]
+z_index = 1
+layout_mode = 3
+anchors_preset = 0
+offset_left = -225.0
+offset_top = 175.0
+offset_right = 225.0
+offset_bottom = 375.0
+
+[node name="ColorRect" type="ColorRect" parent="ChooseDown"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="ChooseDown/ColorRect"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -199.0
+offset_right = 199.0
+offset_bottom = 32.0
+grow_horizontal = 2
+text = "Tap grid to place following tile:"
+label_settings = SubResource("LabelSettings_0tnpc")
+horizontal_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="ChooseDown/ColorRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -72.0
+offset_top = -72.0
+offset_right = 72.0
+offset_bottom = 72.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("AtlasTexture_kvpfn")
+
+[node name="DescLabel" type="Label" parent="ChooseDown/ColorRect"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -199.0
+offset_top = -28.0
+offset_right = 199.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Rob"
+label_settings = SubResource("LabelSettings_kvpfn")
+horizontal_alignment = 1
+
+[node name="ChooseNextSquare" type="Control" parent="."]
+visible = false
+z_index = 1
+layout_mode = 3
+anchors_preset = 0
+offset_left = -225.0
+offset_top = 175.0
+offset_right = 225.0
+offset_bottom = 375.0
+
+[node name="ColorRect" type="ColorRect" parent="ChooseNextSquare"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="ChooseNextSquare/ColorRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -199.0
+offset_top = -16.0
+offset_right = 199.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Choose next square"
+label_settings = SubResource("LabelSettings_dinhu")
+horizontal_alignment = 1
+
+[node name="Timer" type="Label" parent="ChooseNextSquare/ColorRect"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -8.0
+offset_bottom = 32.0
+grow_horizontal = 0
+text = "0"
+label_settings = SubResource("LabelSettings_vtaks")
+horizontal_alignment = 1
+
+[node name="TurnTimer" type="Timer" parent="."]
+wait_time = 15.0
+autostart = true
+
+[connection signal="started" from="." to="TileMapLayer" method="_on_game_started"]

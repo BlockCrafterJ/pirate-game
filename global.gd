@@ -89,6 +89,25 @@ var pirate_nouns = [
 	"Wave Watcher"
 ]
 
+var tile_names = [
+	"Rob",
+	"Kill",
+	"Present",
+	"Skip turn",
+	"Swap",
+	"Choose next square",
+	"Shield",
+	"Mirror",
+	"Bomb",
+	"Double money",
+	"Bank",
+	"5000 cash",
+	"3000 cash",
+	"1000 cash",
+	"200 cash",
+	"Finished"
+]
+
 func _ready() -> void:
 	if OS.get_cmdline_args().has("--local"):
 		print("RUNNING FROM LOCAL SERVER")

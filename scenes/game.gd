@@ -1,5 +1,7 @@
 extends Node2D
 
+signal started
+
 var http = HTTPClient.new() # Create the Client.
 var id := -1
 var pirate_name: String = ""
@@ -27,7 +29,10 @@ var player_name_list = []
 var player_ID_list = []
 var player_name_rects = []
 var player_id_to_action := -1
+var square_to_action: Vector2i = Vector2i(-1,-1)
 var skip_next = 0
+var turn_time: float = 0
+var game_started: bool = false
 @onready var tile_map_cross: TileMapLayer = $TileMapCross
 @onready var tile_map_layer: TileMapLayer = $TileMapLayer
 @onready var name_label: Label = $Control/VBoxContainerTop/Name
@@ -37,6 +42,10 @@ var skip_next = 0
 @onready var picker: Control = $Picker
 @onready var picker_v_box_container: VBoxContainer = $Picker/ColorRect/ScrollContainer/VBoxContainer
 @onready var picker_name: Label = $Picker/ColorRect/Name
+@onready var choose_next_square: Control = $ChooseNextSquare
+@onready var picker_timer: Label = $Picker/ColorRect/Timer
+@onready var cns_timer: Label = $ChooseNextSquare/ColorRect/Timer
+@onready var turn_timer: Timer = $TurnTimer
 const PLAYER_NAME_RECT = preload("res://scenes/player_name_rect.tscn")
 
 # Called when the node enters the scene tree for the first time.
@@ -72,11 +81,15 @@ func http_request(command = "Null"):
 		"Bank: %s" % str(bank),
 		"Player-action: %s" % str(player_action),
 		"Player-id-to-action: %s" % str(player_id_to_action),
+		"Square-to-action: %s" %  JSON.from_native(square_to_action),
 		"Shield: %s" % str(shield),
 		"Mirror: %s" % str(mirror)
 	]
 	if player_id_to_action != -1:
 		player_id_to_action = -1
+		player_action = -1
+	if square_to_action != Vector2i(-1,-1):
+		square_to_action = Vector2i(-1,-1)
 		player_action = -1
 	err = http.request(HTTPClient.METHOD_GET, "/server", out_headers) # Request a page from the site (this one was chunked..)
 	#print("Requesting...")
@@ -146,11 +159,20 @@ func http_request(command = "Null"):
 			player_name_list = JSON.parse_string(headers.get("player-name-list"))
 			player_ID_list = JSON.parse_string(headers.get("player-id-list"))
 		if headers.get("skip-next") != null:
-			print(skip_next)
+			#print(skip_next)
 			skip_next += int(headers.get("skip-next"))
-			print(skip_next)
+			#print(skip_next)
 		#if headers.get("Mirror") != null and headers.get("Shield") != null:
 		#	shield = bool(headers.get("Shield").lower())
+		if headers.get("started") == "True":
+			if not game_started:
+				started.emit()
+			game_started = true
+		else:
+			game_started = false
+		
+		if headers.get("turn-time") != null:
+			turn_time = float(headers.get("turn-time"))
 		
 		#print(text)
 
@@ -181,7 +203,7 @@ func _process(delta: float) -> void:
 	if len(tile_map_cross.different_squares) > 0:
 		if skip_next == 0:
 			for square in tile_map_cross.different_squares:
-				var tile_type : int = tile_map_layer.tile_grid[square[0]][square[1]]
+				var tile_type: int = tile_map_layer.tile_grid[square[0]][square[1]]
 				player_action = -1
 				player_id_to_action = -1
 				if tile_type == Global.M_200:
@@ -215,11 +237,18 @@ func _process(delta: float) -> void:
 					player_action = Global.CHOOSE_NEXT_SQUARE
 				elif tile_type == Global.PRESENT:
 					player_action = Global.PRESENT
+				turn_timer.start(turn_time)
 		else:
 			skip_next -= 1
+	if player_action == Global.CHOOSE_NEXT_SQUARE:
+		choose_next_square.show()
+	else:
+		choose_next_square.hide()
+	
+	picker_timer.text = str(int(turn_timer.time_left)+1)
+	cns_timer.text = str(int(turn_timer.time_left)+1)
 	
 	#print("Checkpoint1")
-	player_action = Global.SWAP
 	if player_action != -1 and player_id_to_action == -1 and player_action != Global.CHOOSE_NEXT_SQUARE:
 		#print("Checkpoint2")
 		match player_action:
@@ -236,7 +265,7 @@ func _process(delta: float) -> void:
 		if player_name_list != [] and player_previous_action != player_action: 
 			player_previous_action = player_action
 			picker.set_process(true)
-			picker.visible = true
+			picker.show()
 			for i in range(len(player_name_list)):
 				var name_rect = PLAYER_NAME_RECT.instantiate()
 				picker_v_box_container.add_child(name_rect)
@@ -249,5 +278,5 @@ func _process(delta: float) -> void:
 			player_name_rects.erase(rect)
 		player_previous_action = player_action
 		picker.set_process(false)
-		picker.visible = false
+		picker.hide()
 	

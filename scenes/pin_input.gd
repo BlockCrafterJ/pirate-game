@@ -39,7 +39,7 @@ func http_request(command = "Null"):
 		# Keep polling for as long as the request is being processed.
 		http.poll()
 		await get_tree().process_frame
-		print("h\nh\nh")
+		#print("h\nh\nh")
 	
 	if err != 0:
 		show_text("Could not send request to server.")
@@ -79,9 +79,9 @@ func http_request(command = "Null"):
 				else:
 					rb = rb + chunk # Append to read buffer.
 		# Done!
-		print(2)
+		#print(2)
 		#print("bytes got: ", rb.size())
-		var text = rb.get_string_from_ascii()
+		#var text = rb.get_string_from_ascii()
 		#print("Text: ", text)
 		
 		if headers.get("id-exists") == "Yes":
@@ -90,7 +90,7 @@ func http_request(command = "Null"):
 		else:
 			show_text("Game does not exist.")
 		
-		print(text)
+		#print(text)
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -100,7 +100,7 @@ func _ready() -> void:
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	pass
 
 
@@ -108,7 +108,7 @@ func show_text(text) -> void:
 	code_label.text = text
 
 
-func _input(event: InputEvent) -> void:
+func _input(_event: InputEvent) -> void:
 	if Input.is_key_pressed(KEY_ENTER):
 		_on_button_pressed()
 

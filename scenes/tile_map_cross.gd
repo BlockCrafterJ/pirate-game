@@ -15,7 +15,6 @@ func _process(_delta: float) -> void:
 			for j in range(tile_grid_height):
 				set_cell(Vector2i(i,j), 1, Vector2i(tile_grid[i][j], 0))
 				for square in different_squares:
-					print([i,j], square)
 					if [i,j] == square:
 						new_square = square
 				if [i,j] == new_square:
