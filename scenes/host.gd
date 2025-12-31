@@ -7,11 +7,18 @@ var game_id := -1
 @onready var tile_map_host: TileMapLayer = $TileMapHost
 const PLAYER_NAME_RECT_LOBBY = preload("res://scenes/player_name_rect_lobby.tscn")
 @onready var h_flow_container: HFlowContainer = $Picker/ColorRect/ScrollContainer/HFlowContainer
+@onready var v_box_container: VBoxContainer = $"Choose Next Square List/Polygon2D/Polygon2D/Control/ScrollContainer/VBoxContainer"
 var player_name_list = []
 var player_id_list = []
 var player_id_list_old = []
+var choose_next_square_list = []
+var choose_next_square_list_old = []
 var started = false
 @onready var lobby: Control = $Picker
+var message := ""
+@onready var status: Label = $Status
+
+
 # Called when the node enters the scene tree for the first time.
 func http_connect():
 	var err = 0
@@ -104,6 +111,13 @@ func http_request(command = "Null"):
 			player_name_list = JSON.parse_string(headers.get("player-name-list"))
 			player_id_list_old = player_id_list
 			player_id_list = JSON.parse_string(headers.get("player-id-list"))
+		if headers.get("choose-next-square-list") != null:
+			choose_next_square_list_old = choose_next_square_list
+			choose_next_square_list = JSON.parse_string(headers.get("choose-next-square-list"))
+		if headers.get("game-message") != null:
+			message = headers.get("game-message")
+		else:
+			message = ""
 		
 		#print(text)
 
@@ -122,6 +136,7 @@ func connect_loop():
 
 func _process(_delta: float) -> void:
 	if player_id_list != player_id_list_old:
+		player_id_list_old = player_id_list
 		for child in h_flow_container.get_children():
 			h_flow_container.remove_child(child)
 			child.free()
@@ -129,6 +144,18 @@ func _process(_delta: float) -> void:
 			var name_rect = PLAYER_NAME_RECT_LOBBY.instantiate()
 			h_flow_container.add_child(name_rect)
 			name_rect.set_text_name(player_name_list[i], str(int(player_id_list[i])))
+	if choose_next_square_list != choose_next_square_list_old:
+		choose_next_square_list_old = choose_next_square_list
+		for child in v_box_container.get_children():
+			v_box_container.remove_child(child)
+			child.free()
+		for i in range(len(choose_next_square_list)):
+			var name_rect = PLAYER_NAME_RECT_LOBBY.instantiate()
+			name_rect.anchor_left = 0.0
+			name_rect.anchor_right = 1.0
+			v_box_container.add_child(name_rect)
+			name_rect.set_text_name(player_name_list[player_id_list.find(choose_next_square_list[i])], str(int(choose_next_square_list[i])))
+		status.text = message
 	#await get_tree().create_timer(5).timeout
 
 #func place_random_temp():

@@ -30,7 +30,7 @@ var current_tile_no: int:
 		for tile_line in tile_grid:
 			if 15 in tile_line:
 				new_tile = current_tile
-		current_tile = Global.CHOOSE_NEXT_SQUARE #new_tile
+		current_tile = new_tile#Global.CHOOSE_NEXT_SQUARE #new_tile
 		current_tile_no = value
 
 func place_tile_at_random(tile):

@@ -15,16 +15,22 @@ var shield := false:
 	set(value):
 		if value:
 			item_animation_player.play("gain_shield")
+			shield = value
 		else:
 			item_animation_player.play("RESET")
+			shield = value
 var mirror := false:
 	set(value):
 		if value:
 			item_animation_player.play("gain_mirror")
+			mirror = value
 		else:
 			item_animation_player.play("RESET")
+			mirror = value
 var player_action = -1
+var player_action_queue = -1
 var player_previous_action = -1
+var cns_action = 0
 var player_name_list = []
 var player_ID_list = []
 var player_name_rects = []
@@ -80,6 +86,7 @@ func http_request(command = "Null"):
 		"Cash: %s" % str(money),
 		"Bank: %s" % str(bank),
 		"Player-action: %s" % str(player_action),
+		"Player-action-queue: %s" % str(player_action_queue),
 		"Player-id-to-action: %s" % str(player_id_to_action),
 		"Square-to-action: %s" %  JSON.from_native(square_to_action),
 		"Shield: %s" % str(shield),
@@ -91,6 +98,7 @@ func http_request(command = "Null"):
 	if square_to_action != Vector2i(-1,-1):
 		square_to_action = Vector2i(-1,-1)
 		player_action = -1
+	player_action_queue = -1
 	err = http.request(HTTPClient.METHOD_GET, "/server", out_headers) # Request a page from the site (this one was chunked..)
 	#print("Requesting...")
 	while http.get_status() == HTTPClient.STATUS_REQUESTING:
@@ -174,9 +182,13 @@ func http_request(command = "Null"):
 		if headers.get("turn-time") != null:
 			turn_time = float(headers.get("turn-time"))
 		
+		if headers.get("cns-action") != null:
+			cns_action = int(headers.get("cns-action"))
+		
 		#print(text)
 
 func _ready() -> void:
+	randomize()
 	pirate_name = Global.pirate_adjectives.pick_random() + " " + Global.pirate_nouns.pick_random()
 	connect_loop()
 
@@ -200,6 +212,10 @@ func _process(delta: float) -> void:
 					if tile_map_cross.tile_grid[x][y] != old_cross_tile_grid[x][y]:
 						tile_map_cross.different_squares.append([x,y])
 	old_cross_tile_grid = tile_map_cross.tile_grid
+	
+	if cns_action == 1:
+		player_action = Global.CHOOSE_NEXT_SQUARE
+	
 	if len(tile_map_cross.different_squares) > 0:
 		if skip_next == 0:
 			for square in tile_map_cross.different_squares:
@@ -234,7 +250,7 @@ func _process(delta: float) -> void:
 				elif tile_type == Global.SWAP:
 					player_action = Global.SWAP
 				elif tile_type == Global.CHOOSE_NEXT_SQUARE:
-					player_action = Global.CHOOSE_NEXT_SQUARE
+					player_action_queue = Global.CHOOSE_NEXT_SQUARE
 				elif tile_type == Global.PRESENT:
 					player_action = Global.PRESENT
 				turn_timer.start(turn_time)
@@ -268,10 +284,15 @@ func _process(delta: float) -> void:
 			picker.show()
 			for i in range(len(player_name_list)):
 				var name_rect = PLAYER_NAME_RECT.instantiate()
-				picker_v_box_container.add_child(name_rect)
-				#print(player_name_list[i])
 				name_rect.set_text_name(player_name_list[i], str(int(player_ID_list[i])))
 				player_name_rects.append(name_rect)
+				#print(player_name_list[i])
+			randomize()
+			print(player_name_rects)
+			player_name_rects.shuffle()
+			print(player_name_rects)
+			for name_rect in player_name_rects:
+				picker_v_box_container.add_child(name_rect)
 	else:
 		for rect in player_name_rects:
 			rect.queue_free()
