@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=4 uid="uid://0tkip44t1esg"]
+[gd_scene load_steps=33 format=4 uid="uid://0tkip44t1esg"]
 
 [ext_resource type="Script" uid="uid://cb1xr5njpisbk" path="res://scenes/game.gd" id="1_p57ef"]
 [ext_resource type="Texture2D" uid="uid://ymwhrta1nv32" path="res://images/spritesheet-ppt.png" id="1_uwrxv"]
@@ -11,6 +11,7 @@
 [ext_resource type="FontFile" uid="uid://6lsj3yg1i6qk" path="res://calibri-regular.ttf" id="9_0tnpc"]
 [ext_resource type="Texture2D" uid="uid://bm44dfx7xxuys" path="res://images/shield-large.png" id="10_kvpfn"]
 [ext_resource type="Texture2D" uid="uid://nxaumw25u2ry" path="res://images/mirror-large.png" id="11_dinhu"]
+[ext_resource type="Texture2D" uid="uid://bwhahikwc4dv" path="res://images/undo-button.png" id="12_dinhu"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_p57ef"]
 texture = ExtResource("1_uwrxv")
@@ -378,6 +379,23 @@ text = "Rob"
 label_settings = SubResource("LabelSettings_kvpfn")
 horizontal_alignment = 1
 
+[node name="Sprite2D" type="Sprite2D" parent="ChooseDown/ColorRect"]
+position = Vector2(78.5, 109.5)
+scale = Vector2(1.6458334, 1.6458334)
+texture = ExtResource("12_dinhu")
+
+[node name="UndoButton" type="Button" parent="ChooseDown/ColorRect/Sprite2D"]
+visibility_layer = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = -24.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="ChooseNextSquare" type="Control" parent="."]
 visible = false
 z_index = 1
@@ -431,3 +449,5 @@ wait_time = 15.0
 autostart = true
 
 [connection signal="started" from="." to="TileMapLayer" method="_on_game_started"]
+[connection signal="button_up" from="ChooseDown/ColorRect/Sprite2D/UndoButton" to="TileMapLayer" method="_on_undo_button_button_up"]
+[connection signal="pressed" from="ChooseDown/ColorRect/Sprite2D/UndoButton" to="TileMapLayer" method="_on_undo_button_pressed"]

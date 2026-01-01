@@ -8,7 +8,7 @@ var port = 443
 var tls_options = TLSOptions.client()
 #var tls_options = null
 enum {ROB, KILL, PRESENT, WIPE_OUT, SWAP, CHOOSE_NEXT_SQUARE, 
-SHIELD, MIRROR, BOMB, DOUBLE, BANK, M_5000, M_3000, M_1000, M_200}
+SHIELD, MIRROR, BOMB, DOUBLE, BANK, M_5000, M_3000, M_1000, M_200, BLANK}
 
 var pirate_adjectives = [
 	"Salty",

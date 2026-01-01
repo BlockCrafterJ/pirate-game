@@ -5,6 +5,7 @@ var available_squares = []
 var tile_grid_width: int = 7
 var tile_grid_height: int = 7
 var hovered_cell: Vector2i
+var placed_cell_history := []
 @onready var camera_2d: Camera2D = $"../Camera2D"
 @onready var texture_rect: TextureRect = $"../ChooseDown/ColorRect/TextureRect"
 @onready var desc_label: Label = $"../ChooseDown/ColorRect/DescLabel"
@@ -26,9 +27,9 @@ var current_tile_no: int:
 			current_tile = 13
 		else:
 			current_tile = 14
-		var new_tile = 15
+		var new_tile = Global.BLANK
 		for tile_line in tile_grid:
-			if 15 in tile_line:
+			if Global.BLANK in tile_line:
 				new_tile = current_tile
 		current_tile = new_tile#Global.CHOOSE_NEXT_SQUARE #new_tile
 		current_tile_no = value
@@ -43,7 +44,7 @@ func _ready() -> void:
 	for i in tile_grid_width:
 		tile_grid.append([])
 		for j in tile_grid_height:
-			tile_grid[i].append(15)
+			tile_grid[i].append(Global.BLANK)
 			available_squares.append(Vector2i(i,j))
 	current_tile = 0
 	# Special squares + 5000
@@ -68,7 +69,8 @@ func _input(event: InputEvent) -> void:
 	#print(event.position + (camera_2d.position - get_viewport_rect().size / 2), get_used_rect())
 	if event is InputEventMouseButton and event.pressed == false and Rect2(position, Vector2(tile_grid_width, tile_grid_height) * 48).has_point(event.position + (camera_2d.position - get_viewport_rect().size / 2)):
 		if game.game_started == false:
-			if tile_grid[hovered_cell[0]][hovered_cell[1]] == 15:
+			if tile_grid[hovered_cell[0]][hovered_cell[1]] == Global.BLANK:
+				placed_cell_history.append(hovered_cell) # Add to history so can be undone
 				tile_grid[hovered_cell[0]][hovered_cell[1]] = current_tile
 				current_tile_no += 1
 				available_squares.erase(hovered_cell)
@@ -95,3 +97,11 @@ func finish_cells() -> void:
 func _on_game_started() -> void:
 	choose_down.hide()
 	finish_cells()
+
+
+func _on_undo_button_pressed() -> void:
+	if placed_cell_history != []:
+		var _cell = placed_cell_history[-1]
+		tile_grid[_cell[0]][_cell[1]] = Global.BLANK
+		current_tile_no -= 1
+		placed_cell_history.remove_at(-1)
